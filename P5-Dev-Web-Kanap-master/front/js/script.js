@@ -23,4 +23,4 @@ fetch(url) // récupérer contenu url
         let node = document.getElementById("items");
         console.log(node);
         node.innerHTML = txt;
-    });
+    }); // manipuler le DOM, utiliser création d'éléments = supprimer innerHtml
