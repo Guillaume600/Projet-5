@@ -40,7 +40,6 @@ fetch(urlApi) // récupérer contenu url
     });
 document.getElementById("addToCart").addEventListener("click", function(evt) {
     console.log(evt.target.textContent);
-    let nameProduct = titleElementHtml.textContent;
     let quantityString = quantityElementHtml.value; // transformation quantity de string à nombre
     let quantity = Number.parseInt(quantityString, 10);
     let colors = colorsElementHtml.value;

@@ -8,19 +8,35 @@ fetch(url) // récupérer contenu url
     .then(function(data) {
         console.log(data);
         console.log(data.name);
-        let txt = "";
+        let sectionKanap = document.getElementById("items");
+
         for (let kanap of data) {
             console.log(kanap.name + kanap._id);
-            txt += `<a href="./product.html?id=${kanap._id}">
-            <article>
-                <img src="${kanap.imageUrl}" alt="Lorem ipsum dolor sit amet, Kanap name1">
-                <h3 class="productName">${kanap.name}</h3>
-                <p class="productDescription">${kanap.description}</p>
-            </article>
-        </a>`;
+            let lien = document.createElement("a"); //createElement pour créer élément HTML 
+            lien.href = `./product.html?id=${kanap._id}`;
+
+            let article = document.createElement("article");
+
+            let image = document.createElement("img");
+            image.src = kanap.imageUrl;
+            image.alt = kanap.altTxt;
+
+            let titre = document.createElement("h3");
+            titre.className = "productName";
+            titre.innerText = kanap.name;
+
+            let paragraphe = document.createElement("p");
+            paragraphe.className = "productDescription";
+            paragraphe.innerText = kanap.description;
+
+            article.append(image); //ajoute l'image
+            article.append(titre); // ajoute titre etc
+            article.append(paragraphe);
+
+            lien.append(article);
+
+            sectionKanap.append(lien);
         }
-        console.log(txt);
-        let node = document.getElementById("items");
-        console.log(node);
-        node.innerHTML = txt;
-    }); // manipuler le DOM, utiliser création d'éléments = supprimer innerHtml
+        console.log(sectionKanap);
+    }); // manipuler le DOM, utiliser création d'éléments = supprimer innerHtml (fait)
+// utiliser document.createElement (fait)
