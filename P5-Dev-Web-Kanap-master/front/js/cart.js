@@ -10,9 +10,9 @@ let panier = JSON.parse(panierString); // conversion string json vers objet js
 console.log(panier);
 
 const cartItemsHtml = document.getElementById("cart__items");
+let data = []; //recup données de l'api (détails des produits)
 
-
-function calculTotal(data) {
+function calculTotal() {
     let quantityTotal = 0; // commencer à 0 car sélection vide
     let priceTotal = 0; // démarrer à 0 car panier vide
     // let contentCart = "";
@@ -25,10 +25,11 @@ function calculTotal(data) {
         quantityTotal += product.quantity; // sélection vide + contenu storage
         priceTotal += product.quantity * productDetail.price; // quantité produits multiplié par prix
     }
-    //cartItemsHtml.innerHTML = contentCart;
     quantityTotalHtml.innerText = quantityTotal;
     priceTotalHtml.innerHTML = priceTotal;
 }
+
+//let contentCart = "";
 
 console.log(urlApi); // pour s'assurer que l'élément apparait dans la console (et comment il apparait) 
 fetch(urlApi) // récupérer contenu url
@@ -36,8 +37,9 @@ fetch(urlApi) // récupérer contenu url
         console.log(response);
         return response.json();
     })
-    .then(function(data) {
-        console.log(data); //données du produit
+    .then(function(products) {
+        console.log(products); //données du produit
+        data = products;
         for (let product of panier) {
             let productDetail = data.find(function(detail) {
                 return detail._id == product.id;
@@ -45,26 +47,27 @@ fetch(urlApi) // récupérer contenu url
             console.log(productDetail);
 
             /* contentCart += `<article class="cart__item" data-id="${product.id}" data-color="${product.colors}">
-                <div class="cart__item__img">
-                <img src="${productDetail.imageUrl}" alt="${productDetail.altTxt}">
-                </div>
-            <div class="cart__item__content">
-            <div class="cart__item__content__description">
-                <h2>${productDetail.name}</h2>
-                <p>${product.colors}</p>
-                <p>${productDetail.price} €</p>
-            </div>
-            <div class="cart__item__content__settings">
-                <div class="cart__item__content__settings__quantity">
-                <p>Qté : </p>
-                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-                </div>
-                <div class="cart__item__content__settings__delete">
-                <p class="deleteItem">Supprimer</p>
-                </div>
-            </div>
-            </div>
-            </article>`; */
+                 <div class="cart__item__img">
+                 <img src="${productDetail.imageUrl}" alt="${productDetail.altTxt}">
+                 </div>
+                 <div class="cart__item__content">
+                 <div class="cart__item__content__description">
+                 <h2>${productDetail.name}</h2>
+                 <p>${product.colors}</p>
+                 <p>${productDetail.price} €</p>
+                 </div>
+                 <div class="cart__item__content__settings">
+                 <div class="cart__item__content__settings__quantity">
+                 <p>Qté : </p>
+                 <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
+                 </div>
+                 <div class="cart__item__content__settings__delete">
+                 <p class="deleteItem">Supprimer</p>
+                 </div>
+                 </div>
+                 </div>
+                 </article>`; */
+
 
             let article = document.createElement("article");
             article.className = "cart__item";
@@ -112,6 +115,8 @@ fetch(urlApi) // récupérer contenu url
             inputQuantity.max = "100";
             inputQuantity.value = product.quantity;
 
+            let paragrapheError = document.createElement("p");
+            paragrapheError.className = "errorMessage";
 
             let divItemParamDelete = document.createElement("div");
             divItemParamDelete.className = "cart__item__content__settings__delete";
@@ -125,42 +130,70 @@ fetch(urlApi) // récupérer contenu url
             divImage.append(image);
             divItemDescription.append(titre, paragrapheColors, paragraphePrice);
             divItem.append(divItemDescription);
-            divItemParamQuantity.append(paragrapheQuantity, inputQuantity);
+            divItemParamQuantity.append(paragrapheQuantity, inputQuantity, paragrapheError);
             divItemParamDelete.append(buttonDelete);
-            divItemParam.append(divItemParamQuantity, inputQuantity, divItemParamDelete);
+            divItemParam.append(divItemParamQuantity, divItemParamDelete);
             divItem.append(divItemParam);
             article.append(divImage, divItem);
 
             cartItemsHtml.append(article);
 
-            inputQuantity.addEventListener("change", function() {
+
+        }
+
+        //cartItemsHtml.innerHTML = contentCart;
+        calculTotal();
+
+        const inputsQuantity = document.getElementsByClassName("itemQuantity");
+        const buttonsDelete = document.getElementsByClassName("deleteItem");
+
+        for (const inputQuantity of inputsQuantity) {
+            inputQuantity.addEventListener("change", function(event) {
                 console.log("maj quantity");
-                // empêcher + 100 articles
+                // empêcher + 100 articles avec message d'erreur
+                const errorMessage = event.currentTarget.nextSibling;
                 if (inputQuantity.valueAsNumber > 100) {
+                    errorMessage.innerText = "Quantité maximale : 100";
                     return;
-                };
-                product.quantity = inputQuantity.valueAsNumber;
-                // maj panier dans storage
+                }
+                errorMessage.innerText = "";
+
+                const article = event.currentTarget.closest(".cart__item");
+                const productId = article.dataset.id;
+                const productColor = article.dataset.color;
+                console.log(productId);
+                console.log(productColor);
+                for (const product of panier) {
+                    if (product.id == productId && product.colors == productColor) {
+                        product.quantity = inputQuantity.valueAsNumber; //maj quantité produits dans panier SI produit de même couleur et même ID
+                    }
+                }
                 let panierString = JSON.stringify(panier);
                 window.localStorage.setItem('panier', panierString);
-                calculTotal(data);
+                calculTotal();
             });
+        }
 
-
-            buttonDelete.addEventListener("click", function() {
+        for (const buttonDelete of buttonsDelete) {
+            buttonDelete.addEventListener("click", function(event) {
                 console.log("supprimerProduitSelect");
                 //effacer contenu HTML
+
+                const article = event.currentTarget.closest(".cart__item");
+                const productId = article.dataset.id;
+                const productColor = article.dataset.color;
+
                 cartItemsHtml.removeChild(article);
                 const nouveauPanier = panier.filter(function(productPanier) {
-                    return productPanier.id != product.id || productPanier.colors != product.colors;
+                    return productPanier.id != productId || productPanier.colors != productColor;
 
                 });
                 // maj panier dans storage
                 let panierString = JSON.stringify(nouveauPanier);
                 window.localStorage.setItem('panier', panierString);
                 panier = nouveauPanier;
-                calculTotal(data);
+                calculTotal();
             });
         }
-        calculTotal(data);
+
     });
