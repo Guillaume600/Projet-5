@@ -13,7 +13,7 @@ fetch(url) // récupérer contenu url
         for (let kanap of data) {
             console.log(kanap.name + kanap._id);
             let lien = document.createElement("a"); //createElement pour créer élément HTML 
-            lien.href = `./product.html?id=${kanap._id}`;
+            lien.setAttribute("href", `./product.html?id=${kanap._id}`);
 
             let article = document.createElement("article");
 

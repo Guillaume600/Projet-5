@@ -29,7 +29,7 @@ function calculTotal() {
     priceTotalHtml.innerHTML = priceTotal;
 }
 
-//let contentCart = "";
+let contentCart = "";
 
 console.log(urlApi); // pour s'assurer que l'élément apparait dans la console (et comment il apparait) 
 fetch(urlApi) // récupérer contenu url
@@ -46,7 +46,7 @@ fetch(urlApi) // récupérer contenu url
             });
             console.log(productDetail);
 
-            /* contentCart += `<article class="cart__item" data-id="${product.id}" data-color="${product.colors}">
+            contentCart += `<article class="cart__item" data-id="${product.id}" data-color="${product.colors}">
                  <div class="cart__item__img">
                  <img src="${productDetail.imageUrl}" alt="${productDetail.altTxt}">
                  </div>
@@ -59,89 +59,89 @@ fetch(urlApi) // récupérer contenu url
                  <div class="cart__item__content__settings">
                  <div class="cart__item__content__settings__quantity">
                  <p>Qté : </p>
-                 <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
+                 <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}"><p class="errorMessage"></p>
                  </div>
                  <div class="cart__item__content__settings__delete">
                  <p class="deleteItem">Supprimer</p>
                  </div>
                  </div>
                  </div>
-                 </article>`; */
+                 </article>`;
 
 
-            let article = document.createElement("article");
-            article.className = "cart__item";
-            article.dataset.id = product.id;
-            article.dataset.color = product.colors;
+            /*             let article = document.createElement("article");
+                        article.className = "cart__item";
+                        article.dataset.id = product.id;
+                        article.dataset.color = product.colors;
 
-            let divImage = document.createElement("div");
-            divImage.className = "cart__item__img";
+                        let divImage = document.createElement("div");
+                        divImage.className = "cart__item__img";
 
-            let image = document.createElement("img");
-            image.src = productDetail.imageUrl;
-            image.alt = productDetail.altTxt;
-
-
-            let divItem = document.createElement("div");
-            divItem.className = "cart__item__content";
-
-            let divItemDescription = document.createElement("div");
-            divItemDescription.className = "cart__item__content__description";
-
-            let titre = document.createElement("h2");
-            titre.innerText = productDetail.name;
-
-            let paragrapheColors = document.createElement("p");
-            paragrapheColors.innerText = product.colors;
-            let paragraphePrice = document.createElement("p");
-            paragraphePrice.innerText = productDetail.price + " €";
+                        let image = document.createElement("img");
+                        image.src = productDetail.imageUrl;
+                        image.alt = productDetail.altTxt;
 
 
-            let divItemParam = document.createElement("div");
-            divItemParam.className = "cart__item__content__settings";
+                        let divItem = document.createElement("div");
+                        divItem.className = "cart__item__content";
 
-            let divItemParamQuantity = document.createElement("div");
-            divItemParamQuantity.className = "cart__item__content__settings__quantity";
+                        let divItemDescription = document.createElement("div");
+                        divItemDescription.className = "cart__item__content__description";
 
-            let paragrapheQuantity = document.createElement("p");
-            paragrapheQuantity.innerText = "Qte : ";
+                        let titre = document.createElement("h2");
+                        titre.innerText = productDetail.name;
+
+                        let paragrapheColors = document.createElement("p");
+                        paragrapheColors.innerText = product.colors;
+                        let paragraphePrice = document.createElement("p");
+                        paragraphePrice.innerText = productDetail.price + " €";
 
 
-            let inputQuantity = document.createElement("input");
-            inputQuantity.type = "number";
-            inputQuantity.className = "itemQuantity";
-            inputQuantity.name = "itemQuantity";
-            inputQuantity.min = "1";
-            inputQuantity.max = "100";
-            inputQuantity.value = product.quantity;
+                        let divItemParam = document.createElement("div");
+                        divItemParam.className = "cart__item__content__settings";
 
-            let paragrapheError = document.createElement("p");
-            paragrapheError.className = "errorMessage";
+                        let divItemParamQuantity = document.createElement("div");
+                        divItemParamQuantity.className = "cart__item__content__settings__quantity";
 
-            let divItemParamDelete = document.createElement("div");
-            divItemParamDelete.className = "cart__item__content__settings__delete";
+                        let paragrapheQuantity = document.createElement("p");
+                        paragrapheQuantity.innerText = "Qte : ";
 
-            let buttonDelete = document.createElement("button"); // remplacer par p si besoin
-            buttonDelete.className = "deleteItem";
-            buttonDelete.innerText = "Supprimer";
 
-            //imbrication via append
+                        let inputQuantity = document.createElement("input");
+                        inputQuantity.type = "number";
+                        inputQuantity.className = "itemQuantity";
+                        inputQuantity.name = "itemQuantity";
+                        inputQuantity.min = "1";
+                        inputQuantity.max = "100";
+                        inputQuantity.value = product.quantity;
 
-            divImage.append(image);
-            divItemDescription.append(titre, paragrapheColors, paragraphePrice);
-            divItem.append(divItemDescription);
-            divItemParamQuantity.append(paragrapheQuantity, inputQuantity, paragrapheError);
-            divItemParamDelete.append(buttonDelete);
-            divItemParam.append(divItemParamQuantity, divItemParamDelete);
-            divItem.append(divItemParam);
-            article.append(divImage, divItem);
+                        let paragrapheError = document.createElement("p");
+                        paragrapheError.className = "errorMessage";
 
-            cartItemsHtml.append(article);
+                        let divItemParamDelete = document.createElement("div");
+                        divItemParamDelete.className = "cart__item__content__settings__delete";
 
+                        let buttonDelete = document.createElement("button"); // remplacer par p si besoin
+                        buttonDelete.className = "deleteItem";
+                        buttonDelete.innerText = "Supprimer";
+
+                        //imbrication via append
+
+                        divImage.append(image);
+                        divItemDescription.append(titre, paragrapheColors, paragraphePrice);
+                        divItem.append(divItemDescription);
+                        divItemParamQuantity.append(paragrapheQuantity, inputQuantity, paragrapheError);
+                        divItemParamDelete.append(buttonDelete);
+                        divItemParam.append(divItemParamQuantity, divItemParamDelete);
+                        divItem.append(divItemParam);
+                        article.append(divImage, divItem);
+
+                        cartItemsHtml.append(article);
+             */
 
         }
 
-        //cartItemsHtml.innerHTML = contentCart;
+        cartItemsHtml.innerHTML = contentCart;
         calculTotal();
 
         const inputsQuantity = document.getElementsByClassName("itemQuantity");
