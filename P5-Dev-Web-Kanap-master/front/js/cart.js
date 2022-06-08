@@ -30,7 +30,7 @@ function calculTotal() {
 }
 
 //let contentCart = "";
-
+// Affichage et gestion du panier
 console.log(urlApi); // pour s'assurer que l'élément apparait dans la console (et comment il apparait) 
 fetch(urlApi) // récupérer contenu url
     .then(function(response) { // PUIS fonction DANS fonction 
@@ -197,3 +197,115 @@ fetch(urlApi) // récupérer contenu url
         }
 
     });
+
+//Gestion du formulaire
+const firstNameInputHtml = document.getElementById("firstName");
+const lastNameInputHtml = document.getElementById("lastName");
+const addressInputHtml = document.getElementById("address");
+const cityInputHtml = document.getElementById("city");
+const emailInputHtml = document.getElementById("email");
+const formulaireFormHtml = document.getElementById("formulaire");
+
+let firstNameIsValid = false;
+let lastNameIsValid = false;
+let addressIsValid = false;
+let cityIsValid = false;
+let emailIsValid = false;
+
+firstNameInputHtml.addEventListener("input", function() {
+    const regexName = /([a-zA-Z]+)/;
+    firstNameIsValid = firstNameInputHtml.value.match(regexName);
+    const errorMessage = document.getElementById("firstNameErrorMsg");
+    if (firstNameIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Le prénom doit faire plus de 2 caractères";
+    }
+});
+
+lastNameInputHtml.addEventListener("input", function() {
+    const regexName = /([a-zA-Z]+)/;
+    lastNameIsValid = lastNameInputHtml.value.match(regexName);
+    const errorMessage = document.getElementById("lastNameErrorMsg");
+    if (lastNameIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Le nom doit faire au moins 1 caractère";
+    }
+});
+
+addressInputHtml.addEventListener("input", function() {
+    addressIsValid = addressInputHtml.value.length > 0;
+    const errorMessage = document.getElementById("addressErrorMsg");
+    if (addressIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Addresse requise pour continuer";
+    }
+});
+
+cityInputHtml.addEventListener("input", function() {
+    cityIsValid = cityInputHtml.value.length > 0;
+    const errorMessage = document.getElementById("cityErrorMsg");
+    if (cityIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Ville requise pour continuer";
+    }
+});
+
+emailInputHtml.addEventListener("input", function() {
+    //caractères, chiffres et symboles , ensuite @ , ensuite caractères et points, ensuite . ensuite caractères uniquement
+    const regexMail = /([a-zA-Z0-9-_+]+@[a-zA-Z0-9.]+\.[a-z]+)/;
+    emailIsValid = emailInputHtml.value.match(regexMail);
+    const errorMessage = document.getElementById("emailErrorMsg");
+    if (emailIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Veuillez entrer une adresse email valide";
+    }
+});
+
+formulaireFormHtml.addEventListener("submit", function(event) {
+    event.preventDefault();
+    // Si formulaire invalide ET/ou panier vide
+    if (!firstNameIsValid ||
+        !lastNameIsValid ||
+        !addressIsValid ||
+        !cityIsValid ||
+        !emailIsValid ||
+        panier.length == 0
+    ) {
+        console.log("formulaireInvalide")
+        return;
+    }
+    console.log(firstNameInputHtml.value, lastNameInputHtml.value, addressInputHtml.value, cityInputHtml.value, emailInputHtml.value);
+    const products = [];
+    for (const product of panier) {
+        products.push(product.id);
+    }
+    const order = {
+        contact: {
+            firstName: firstNameInputHtml.value,
+            lastName: lastNameInputHtml.value,
+            address: addressInputHtml.value,
+            city: cityInputHtml.value,
+            email: emailInputHtml.value
+        },
+        products: products
+    };
+    fetch(`${urlApi}/order`, {
+            method: "POST",
+            body: JSON.stringify(order),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(response) {
+            console.log(response);
+            window.location.href = `confirmation.html?orderid=${response.orderId}`;
+        });
+});
