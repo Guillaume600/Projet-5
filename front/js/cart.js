@@ -68,7 +68,7 @@ fetch(urlApi) // récupérer contenu url
                  </div>
                  </article>`; */
 
-
+            //création manuelle des balises et de leur contenu a l'aide de createElement
             let article = document.createElement("article");
             article.className = "cart__item";
             article.dataset.id = product.id;
@@ -198,7 +198,7 @@ fetch(urlApi) // récupérer contenu url
 
     });
 
-//Gestion du formulaire
+//Gestion du formulaire et de ses éléments
 const firstNameInputHtml = document.getElementById("firstName");
 const lastNameInputHtml = document.getElementById("lastName");
 const addressInputHtml = document.getElementById("address");
@@ -211,7 +211,9 @@ let lastNameIsValid = false;
 let addressIsValid = false;
 let cityIsValid = false;
 let emailIsValid = false;
-
+//fonction permettant d'attribuer les conditions de validation de confirmation de commande
+//le regex permet d'assurer l'utilisation de bons caractères dans les champs à remplir
+//récupération de toutes les données
 firstNameInputHtml.addEventListener("input", function() {
     const regexName = /([a-zA-Z]+)/;
     firstNameIsValid = firstNameInputHtml.value.match(regexName);
@@ -255,7 +257,7 @@ cityInputHtml.addEventListener("input", function() {
 });
 
 emailInputHtml.addEventListener("input", function() {
-    //caractères, chiffres et symboles , ensuite @ , ensuite caractères et points, ensuite . ensuite caractères uniquement
+    //construction regex :caractères, chiffres et symboles , ensuite @ , ensuite caractères et points, ensuite . ensuite caractères uniquement
     const regexMail = /([a-zA-Z0-9-_+]+@[a-zA-Z0-9.]+\.[a-z]+)/;
     emailIsValid = emailInputHtml.value.match(regexMail);
     const errorMessage = document.getElementById("emailErrorMsg");
@@ -284,6 +286,7 @@ formulaireFormHtml.addEventListener("submit", function(event) {
     for (const product of panier) {
         products.push(product.id);
     }
+    //création de l'objet contenant toutes les informations 
     const order = {
         contact: {
             firstName: firstNameInputHtml.value,
@@ -294,6 +297,7 @@ formulaireFormHtml.addEventListener("submit", function(event) {
         },
         products: products
     };
+    //requête POST pour récupérer l'ID de la commande (orderID)
     fetch(`${urlApi}/order`, {
             method: "POST",
             body: JSON.stringify(order),
