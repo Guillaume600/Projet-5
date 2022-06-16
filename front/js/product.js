@@ -24,6 +24,7 @@ fetch(urlApi) // récupérer contenu url
     .then(function(data) {
         console.log(data); //données du produit
 
+        document.title = data.name;
         titleElementHtml.innerText = data.name;
         priceElementHtml.innerText = data.price;
         photoElementHtml.src = data.imageUrl;
@@ -38,11 +39,24 @@ fetch(urlApi) // récupérer contenu url
         console.log(txt);
         colorsElementHtml.innerHTML = txt;
     });
+
+quantityElementHtml.addEventListener("input", function() {
+    quantityIsValid = quantityElementHtml.value <= 100;
+    const errorMessage = document.getElementById("quantityErrorMessage");
+    if (quantityIsValid) {
+        errorMessage.innerText = "";
+    } else {
+        errorMessage.innerText = "Quantité max autorisée : 100";
+    }
+});
+
 document.getElementById("addToCart").addEventListener("click", function(evt) {
     console.log(evt.target.textContent);
     let quantityString = quantityElementHtml.value; // transformation quantity de string à nombre
     let quantity = Number.parseInt(quantityString, 10);
     let colors = colorsElementHtml.value;
+    let validationMessageHtml = document.getElementById("validationPanier");
+    let erreurPanierHtml = document.getElementById("erreurPanier");
     console.log(id);
     console.log(colors);
     console.log(quantity);
@@ -53,15 +67,19 @@ document.getElementById("addToCart").addEventListener("click", function(evt) {
     }
     let panier = JSON.parse(panierStringOriginal); // conversion string json vers objet js
     console.log(panier);
+    validationMessageHtml.innerText = "";
+    erreurPanierHtml.innerText = "";
 
     //si produit existe déjà dans panier incrémentation quantité
     let productExisting = false;
     for (let product of panier) {
         if (product.id == id && product.colors == colors) { // si l'id ET la couleur snt déjà dans panier
-            if (product.quantity + quantity >= 100) {
-                product.quantity = 100;
-            } else {
+            if (product.quantity + quantity <= 100) {
                 product.quantity += quantity; // ajouter quantity à quantity déjà existante
+                validationMessageHtml.innerText = `${quantity} produit(s) ajouté(s) au panier`;
+            } else {
+                console.log("Produit pas ajouté car quantité trop grande");
+                erreurPanierHtml.innerText = "Produit pas ajouté car quantité trop grande";
             }
             productExisting = true;
         }
@@ -73,8 +91,7 @@ document.getElementById("addToCart").addEventListener("click", function(evt) {
             quantity: quantity,
             colors: colors,
         });
-    } else {
-        console.log("Produit pas ajouté car quantité trop grande");
+        validationMessageHtml.innerText = `${quantity} produit(s) ajouté(s) au panier`;
     }
 
     let panierString = JSON.stringify(panier);

@@ -198,7 +198,7 @@ fetch(urlApi) // récupérer contenu url
 
     });
 
-    //Gestion du formulaire et de ses éléments
+//Gestion du formulaire et de ses éléments
 const firstNameInputHtml = document.getElementById("firstName");
 const lastNameInputHtml = document.getElementById("lastName");
 const addressInputHtml = document.getElementById("address");
@@ -215,24 +215,24 @@ let emailIsValid = false;
 //le regex permet d'assurer l'utilisation de bons caractères dans les champs à remplir
 //récupération de toutes les données
 firstNameInputHtml.addEventListener("input", function() {
-    const regexName = /([a-zA-Z]+)/;
+    const regexName = /(^[a-zA-Z]+$)/;
     firstNameIsValid = firstNameInputHtml.value.match(regexName);
     const errorMessage = document.getElementById("firstNameErrorMsg");
     if (firstNameIsValid) {
         errorMessage.innerText = "";
     } else {
-        errorMessage.innerText = "Le prénom doit faire plus de 2 caractères";
+        errorMessage.innerText = "Uniquement des lettres et plus de deux caractères";
     }
 });
 
 lastNameInputHtml.addEventListener("input", function() {
-    const regexName = /([a-zA-Z]+)/;
+    const regexName = /(^[a-zA-Z]+$)/;
     lastNameIsValid = lastNameInputHtml.value.match(regexName);
     const errorMessage = document.getElementById("lastNameErrorMsg");
     if (lastNameIsValid) {
         errorMessage.innerText = "";
     } else {
-        errorMessage.innerText = "Le nom doit faire au moins 1 caractère";
+        errorMessage.innerText = "Uniquement des lettres et plus de deux caractères";
     }
 });
 
