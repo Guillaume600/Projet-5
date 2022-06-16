@@ -83,11 +83,14 @@
                             <div class="item__content__settings__quantity">
                                 <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
                                 <input type="number" name="itemQuantity" min="1" max="100" value="1" id="quantity">
+                                <span id="quantityErrorMessage" class="quantityErrorMessage"></span>
                             </div>
                         </div>
 
                         <div class="item__content__addButton">
                             <button id="addToCart">Ajouter au panier</button>
+                            <p id="validationPanier" class="validationPanier"></p>
+                            <p id="erreurPanier" class="quantityErrorMessage"></p>
                         </div>
 
                     </div>
