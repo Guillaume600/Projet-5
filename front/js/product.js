@@ -41,7 +41,7 @@ fetch(urlApi) // récupérer contenu url
     });
 
 quantityElementHtml.addEventListener("input", function() {
-    quantityIsValid = quantityElementHtml.value <= 100;
+    let quantityIsValid = quantityElementHtml.value <= 100;
     const errorMessage = document.getElementById("quantityErrorMessage");
     if (quantityIsValid) {
         errorMessage.innerText = "";
